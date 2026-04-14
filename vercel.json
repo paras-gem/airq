@@ -1,6 +1,4 @@
 {
-  "buildCommand": "cd TEST && npm install && npm run build",
-  "outputDirectory": "TEST/dist",
   "rewrites": [
     {
       "source": "/(.*)",
