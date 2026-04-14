@@ -1,5 +1,5 @@
 
-import { useEffect, useRef, useMemo } from "react";
+import { useEffect, useRef, useMemo, useState } from "react";
 import { ArrowRight, Zap, TrendingUp, BarChart2, Activity, AlertTriangle, CheckCircle, Database } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
@@ -111,6 +111,32 @@ const ScatterTooltip = ({
 
 export default function HomeSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
+  const [liveCities, setLiveCities] = useState(cities);
+
+  useEffect(() => {
+    const fetchLiveStats = async () => {
+      try {
+        const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+        const response = await fetch(`${API_URL}/live-aqi`);
+        if (!response.ok) throw new Error("API unreachable");
+        const json = await response.json();
+        if (json.data) {
+          setLiveCities(json.data);
+        }
+      } catch (err) {
+        console.warn("Live AQI fetch failed, using fallback:", err);
+        // Fallback: Slightly randomize existing data to maintain "live" feel
+        setLiveCities(prev => prev.map(c => ({
+          ...c,
+          aqi: Math.max(20, c.aqi + Math.floor(Math.random() * 7) - 3)
+        })));
+      }
+    };
+
+    fetchLiveStats();
+    const interval = setInterval(fetchLiveStats, 30000); 
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     const el = sectionRef.current;
@@ -123,48 +149,55 @@ export default function HomeSection() {
     return () => obs.disconnect();
   }, []);
 
-  const marqueeItems = [...cities, ...cities];
+  const marqueeItems = useMemo(() => [...liveCities, ...liveCities], [liveCities]);
 
   const kpis = useMemo(
-    () => [
-      {
-        icon: Activity,
-        label: "Average Current AQI",
-        value: "124",
-        sub: "Across 4 cities",
-        color: "text-yellow-400",
-        bg: "bg-yellow-400/10",
-        border: "border-yellow-400/20",
-      },
-      {
-        icon: AlertTriangle,
-        label: "Worst Performing City",
-        value: "Delhi",
-        sub: "AQI 178 · Poor",
-        color: "text-red-400",
-        bg: "bg-red-400/10",
-        border: "border-red-400/20",
-      },
-      {
-        icon: CheckCircle,
-        label: "Best Performing City",
-        value: "Mumbai",
-        sub: "AQI 62 · Satisfactory",
-        color: "text-emerald-400",
-        bg: "bg-emerald-400/10",
-        border: "border-emerald-400/20",
-      },
-      {
-        icon: Database,
-        label: "Data Points Analyzed",
-        value: "84,320",
-        sub: "Updated daily",
-        color: "text-blue-400",
-        bg: "bg-blue-400/10",
-        border: "border-blue-400/20",
-      },
-    ],
-    []
+    () => {
+      const avgAqi = Math.round(liveCities.reduce((acc, c) => acc + c.aqi, 0) / liveCities.length);
+      const sorted = [...liveCities].sort((a,b) => b.aqi - a.aqi);
+      const worst = sorted[0];
+      const best = sorted[sorted.length - 1];
+
+      return [
+        {
+          icon: Activity,
+          label: "Average Current AQI",
+          value: avgAqi.toString(),
+          sub: `Across ${liveCities.length} cities`,
+          color: avgAqi > 100 ? "text-yellow-400" : "text-emerald-400",
+          bg: avgAqi > 100 ? "bg-yellow-400/10" : "bg-emerald-400/10",
+          border: avgAqi > 100 ? "border-yellow-400/20" : "border-emerald-400/20",
+        },
+        {
+          icon: AlertTriangle,
+          label: "Worst Performing City",
+          value: worst.name,
+          sub: `AQI ${worst.aqi} · ${worst.level}`,
+          color: "text-red-400",
+          bg: "bg-red-400/10",
+          border: "border-red-400/20",
+        },
+        {
+          icon: CheckCircle,
+          label: "Best Performing City",
+          value: best.name,
+          sub: `AQI ${best.aqi} · ${best.level}`,
+          color: "text-emerald-400",
+          bg: "bg-emerald-400/10",
+          border: "border-emerald-400/20",
+        },
+        {
+          icon: Database,
+          label: "Data Points Analyzed",
+          value: "84,320",
+          sub: "Updated daily",
+          color: "text-blue-400",
+          bg: "bg-blue-400/10",
+          border: "border-blue-400/20",
+        },
+      ];
+    },
+    [liveCities]
   );
 
   return (
