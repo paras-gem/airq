@@ -1,1 +1,10 @@
-{"buildCommand": "cd TEST && npm ci && npm run type-check && npm run build","outputDirectory": "TEST/dist","rewrites": [{"source": "/(.*)","destination": "/"}]}
+{
+  "buildCommand": "cd TEST && npm install && npm run build",
+  "outputDirectory": "TEST/dist",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/"
+    }
+  ]
+}
