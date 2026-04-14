@@ -117,6 +117,28 @@ def health():
         'is_dummy_model': metadata.get('is_dummy', False)
     }), 200
 
+@app.route('/live-aqi', methods=['GET'])
+def live_aqi():
+    """Returns simulated live AQI for the landing page ticker"""
+    import random
+    cities_data = [
+        {"name": "Delhi", "aqi": random.randint(150, 250)},
+        {"name": "Hyderabad", "aqi": random.randint(70, 120)},
+        {"name": "Kolkata", "aqi": random.randint(120, 190)},
+        {"name": "Mumbai", "aqi": random.randint(50, 100)},
+        {"name": "Chennai", "aqi": random.randint(60, 110)},
+        {"name": "Bangalore", "aqi": random.randint(40, 80)},
+    ]
+    
+    for city in cities_data:
+        city["level"] = get_aqi_category(city["aqi"])
+        
+    return jsonify({
+        "status": "success",
+        "data": cities_data,
+        "timestamp": pd.Timestamp.now().isoformat()
+    }), 200
+
 @app.route('/', methods=['GET'])
 def index():
     return "<h1>AIRQ Backend is Live!</h1><p>Send POST requests to /predict</p>", 200
