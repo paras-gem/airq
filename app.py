@@ -117,6 +117,10 @@ def health():
         'is_dummy_model': metadata.get('is_dummy', False)
     }), 200
 
+@app.route('/', methods=['GET'])
+def index():
+    return "<h1>AIRQ Backend is Live!</h1><p>Send POST requests to /predict</p>", 200
+
 
 if __name__ == '__main__':
     logger.info("🚀 AQI Prediction Backend running on http://localhost:5000")
