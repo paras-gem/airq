@@ -47,8 +47,7 @@ export default function Footer() {
 
           {/* Copyright */}
           <p className="footer-copyright">
-            © 2026 AirQ. Developed by{" "}
-            <span>Pratham</span> · BCA, Christ University
+            © 2026 AirQ. AI-Powered Air Quality Prediction.
           </p>
         </div>
       </div>

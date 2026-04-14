@@ -83,21 +83,33 @@ export default function CursorTrail() {
 
     window.addEventListener("mousemove", onMove);
 
-    const animate = () => {
-      ctx.setTransform(1, 0, 0, 1, 0, 0); // Reset for clearRect
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.setTransform(0.5, 0, 0, 0.5, 0, 0); // Re-apply 50% scaling
+    // Touch support for mobile - converts finger swipes to smoke trail
+    const onTouch = (e: TouchEvent) => {
+      const touch = e.touches[0];
+      if (!touch) return;
+      if (cursor) {
+        cursor.style.left = `${touch.clientX}px`;
+        cursor.style.top = `${touch.clientY}px`;
+      }
+      const synthetic = { clientX: touch.clientX, clientY: touch.clientY } as MouseEvent;
+      onMove(synthetic);
+    };
+    window.addEventListener("touchmove", onTouch, { passive: true });
 
-      // Optimization: Cull particles faster to save memory
+    const animate = () => {
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.setTransform(0.5, 0, 0, 0.5, 0, 0);
+
       particlesRef.current = particlesRef.current.filter((p) => p.alpha > 0.02);
 
       for (const p of particlesRef.current) {
-        p.x += p.vx + Math.sin(p.alpha * 15) * 0.4; // Swirl horizontally
+        p.x += p.vx + Math.sin(p.alpha * 15) * 0.4;
         p.y += p.vy;
-        p.vy -= 0.05; // Hot smoke rises up!
-        p.vx *= 0.95; // Air resistance slows horizontal spreading
-        p.alpha *= 0.94; // Fade out naturally
-        p.radius *= 1.03; // Smoke expands strongly as it rises
+        p.vy -= 0.05;
+        p.vx *= 0.95;
+        p.alpha *= 0.94;
+        p.radius *= 1.03;
 
         const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.radius);
         grad.addColorStop(0, `rgba(180, 190, 200, ${p.alpha})`);
@@ -118,6 +130,7 @@ export default function CursorTrail() {
     return () => {
       window.removeEventListener("resize", resize);
       window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("touchmove", onTouch);
       cancelAnimationFrame(animFrameRef.current);
     };
   }, []);

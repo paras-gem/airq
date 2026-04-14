@@ -547,20 +547,6 @@ nextjs-portal {
 
 /* ===== GLOBAL MOBILE FIXES ===== */
 @media (max-width: 767px) {
-  /* Disable custom cursor on touch devices - CRITICAL, stops glitching */
-  html, body {
-    cursor: auto !important;
-  }
-
-  .custom-cursor,
-  #smoke-canvas {
-    display: none !important;
-  }
-
-  .nav-mobile-toggle {
-    cursor: pointer !important;
-  }
-
   /* Prevent horizontal overflow/scrolling on mobile */
   body, html {
     overflow-x: hidden;
