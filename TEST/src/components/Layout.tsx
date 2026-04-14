@@ -15,7 +15,10 @@ export default function Layout() {
                 if (el) {
                     el.scrollIntoView({ behavior: "smooth" });
                 }
-            }, 500); // Small delay to allow page content to render
+            }, 100); 
+        } else {
+            // Instantly scroll to top when changing page without a hash fragment
+            window.scrollTo(0, 0);
         }
     }, [location]);
 

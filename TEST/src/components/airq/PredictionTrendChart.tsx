@@ -238,7 +238,7 @@ export default function PredictionTrendChart() {
             border: '2px dashed var(--color-gray-200)', 
             borderRadius: '1rem'
           }}>
-            <p style={{ color: 'var(--color-gray-400)', fontSize: '0.8rem', fontWeight: '600' }}>Cloud Sync Offline</p>
+            <p style={{ color: 'var(--color-gray-400)', fontSize: '0.8rem', fontWeight: '600' }}>Cloud API Offline</p>
           </div>
         ) : (
           <div style={{ height: '300px', width: '100%', position: 'relative', marginTop: '2rem' }}>
