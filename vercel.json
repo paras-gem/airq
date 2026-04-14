@@ -1,5 +1,5 @@
 {
-  "buildCommand": "cd TEST && npm install && npm run build",
+  "buildCommand": "cd TEST && npm i --no-package-lock && CI=false npm run build",
   "outputDirectory": "TEST/dist",
   "rewrites": [
     {
