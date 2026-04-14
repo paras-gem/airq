@@ -24,6 +24,17 @@ export default function AboutSection() {
       { threshold: 0.05 }
     );
     elements.forEach((el) => el && obs.observe(el));
+    
+    if (window.location.hash) {
+      setTimeout(() => {
+        const id = window.location.hash.replace("#", "");
+        const el = document.getElementById(id);
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth" });
+        }
+      }, 100);
+    }
+    
     return () => obs.disconnect();
   }, []);
 

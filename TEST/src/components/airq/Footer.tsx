@@ -3,9 +3,9 @@
 import { Wind } from "lucide-react";
 
 const footerLinks = [
-  { label: "About", href: "#about" },
-  { label: "Project Details", href: "#project" },
-  { label: "Developer Credits", href: "#credits" },
+  { label: "About", href: "/about" },
+  { label: "Project Details", href: "/about#project" },
+  { label: "Developer Credits", href: "/about#credits" },
 ];
 
 import { useNavigate, useLocation } from "react-router-dom";
@@ -16,15 +16,23 @@ export default function Footer() {
 
   const handleNav = (e: React.MouseEvent, href: string) => {
     e.preventDefault();
-    const id = href.replace("#", "");
-
-    if (location.pathname === "/") {
-      const el = document.getElementById(id);
-      if (el) {
-        el.scrollIntoView({ behavior: "smooth" });
+    if (href.startsWith("/")) {
+      if (location.pathname === "/about" && href.includes("#")) {
+        const id = href.split("#")[1];
+        document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+      } else {
+        navigate(href);
       }
     } else {
-      navigate(`/${href}`);
+      const id = href.replace("#", "");
+      if (location.pathname === "/") {
+        const el = document.getElementById(id);
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth" });
+        }
+      } else {
+        navigate(`/${href}`);
+      }
     }
   };
 
@@ -63,8 +71,8 @@ export default function Footer() {
             <p className="footer-copyright">
               © 2026 AirQ. Developed by{" "}
               <a 
-                href="#credits" 
-                onClick={(e) => handleNav(e, "#credits")}
+                href="/about#credits" 
+                onClick={(e) => handleNav(e, "/about#credits")}
                 className="footer-dev-credit"
               >
                 <span>Pratham Kumar Gupta</span> & Team

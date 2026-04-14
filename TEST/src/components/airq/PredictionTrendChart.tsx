@@ -31,23 +31,36 @@ export default function PredictionTrendChart() {
 
   const generateSimulatedData = (city: string): DataPoint[] => {
     const cityBaseAqi: Record<string, number> = {
-      Delhi: 180, Mumbai: 110, Kolkata: 145, Hyderabad: 95
+      Delhi: 178, Mumbai: 62, Kolkata: 145, Hyderabad: 94
     };
     const base = cityBaseAqi[city] || 130;
     const now = new Date();
     const data: DataPoint[] = [];
+    
     // 24 hours of "observed" data
     for (let i = 23; i >= 0; i--) {
       const t = new Date(now.getTime() - i * 3600000);
       const hour = t.getHours();
       const peakFactor = (hour >= 7 && hour <= 10) || (hour >= 17 && hour <= 21) ? 1.15 : 0.92;
-      const aqi = Math.round(base * peakFactor + (Math.random() - 0.5) * 25);
+      
+      // Use deterministic pseudo-randomness based on hour, day, and city length
+      const pseudoRandom = Math.sin(hour * city.length + now.getDate()) * 12;
+      let aqi = Math.round(base * peakFactor + pseudoRandom);
+      
+      // Ensure the most recent "live" observed data point matches the base closely 
+      if (i === 0) {
+        aqi = base;
+      }
+      
       data.push({ time: `${t.getHours().toString().padStart(2,'0')}:00`, aqi: Math.max(20, aqi), isPredicted: false });
     }
+    
     // 6 hours of predicted data
     for (let i = 1; i <= 6; i++) {
       const t = new Date(now.getTime() + i * 3600000);
-      const aqi = Math.round(base + (Math.random() - 0.48) * 30 - i * 2);
+      const hour = t.getHours();
+      const pseudoRandom = Math.cos(hour * city.length + now.getDate()) * 15;
+      const aqi = Math.round(base + pseudoRandom - i * 1.5);
       data.push({ time: `${t.getHours().toString().padStart(2,'0')}:00`, aqi: Math.max(20, aqi), isPredicted: true });
     }
     return data;
