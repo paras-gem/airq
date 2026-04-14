@@ -1,6 +1,10 @@
 {
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
-  "framework": "vite",
-  "rootDirectory": "TEST"
+  "buildCommand": "cd TEST && npm install && npm run build",
+  "outputDirectory": "TEST/dist",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/"
+    }
+  ]
 }
