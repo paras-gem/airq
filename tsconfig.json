@@ -1,0 +1,1 @@
+{\n  \"compilerOptions\": {\n    \"noUnusedLocals\": false,\n    \"noUnusedParameters\": false\n  },\n  \"include\": [\n    \"src\",\n    \"TEST/src\"\n  ]\n}
