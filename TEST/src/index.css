@@ -544,3 +544,47 @@ body {
 nextjs-portal {
   display: none !important;
 }
+
+/* ===== GLOBAL MOBILE FIXES ===== */
+@media (max-width: 767px) {
+  /* Disable custom cursor on touch devices - CRITICAL, stops glitching */
+  html, body {
+    cursor: auto !important;
+  }
+
+  .custom-cursor,
+  #smoke-canvas {
+    display: none !important;
+  }
+
+  .nav-mobile-toggle {
+    cursor: pointer !important;
+  }
+
+  /* Prevent horizontal overflow/scrolling on mobile */
+  body, html {
+    overflow-x: hidden;
+    max-width: 100vw;
+  }
+
+  /* Footer mobile fix */
+  .footer-layout {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .footer-nav {
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .footer-brand-subtitle {
+    display: none;
+  }
+
+  /* Fix depth cards on mobile */
+  .depth-card {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  }
+}

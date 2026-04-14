@@ -479,3 +479,44 @@
     background-color: rgba(96, 165, 250, 0.4);
     transform: scale(1.8);
 }
+
+/* ===== MOBILE OPTIMIZATIONS ===== */
+@media (max-width: 767px) {
+    .about-section,
+    .about-section-alt {
+        padding: 3rem 0 2rem;
+    }
+
+    .about-container {
+        padding: 0 0.875rem;
+    }
+
+    .about-header-card {
+        padding: 1.25rem;
+        border-radius: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .about-title {
+        font-size: 1.4rem;
+    }
+
+    .about-card:hover {
+        transform: none;
+        box-shadow: none;
+    }
+
+    .about-card {
+        padding: 1.25rem;
+    }
+
+    .about-links {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .about-btn-gh,
+    .about-btn-in {
+        justify-content: center;
+    }
+}

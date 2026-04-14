@@ -355,3 +355,43 @@
     background-color: rgba(16, 185, 129, 0.4);
     transform: scale(1.8);
 }
+
+/* ===== MOBILE OPTIMIZATIONS ===== */
+@media (max-width: 767px) {
+    .alerts-section {
+        padding: 4rem 0 2rem;
+    }
+
+    .alerts-container {
+        padding: 0 0.875rem;
+    }
+
+    .alerts-header {
+        padding: 1.25rem;
+        border-radius: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .alerts-title {
+        font-size: 1.4rem;
+    }
+
+    .alerts-stats {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.5rem;
+    }
+
+    .alerts-stat-val {
+        font-size: 1.4rem;
+    }
+
+    .alerts-card:hover {
+        transform: none;
+        box-shadow: none;
+    }
+
+    .alerts-stat-card:hover {
+        transform: none;
+        box-shadow: none;
+    }
+}

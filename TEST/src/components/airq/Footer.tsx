@@ -47,7 +47,7 @@ export default function Footer() {
 
           {/* Copyright */}
           <p className="footer-copyright">
-            © 2024 AirQ. Developed by{" "}
+            © 2026 AirQ. Developed by{" "}
             <span>Pratham</span> · BCA, Christ University
           </p>
         </div>

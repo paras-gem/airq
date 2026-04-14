@@ -467,3 +467,68 @@
     font-size: 0.875rem;
     line-height: 1.625;
 }
+
+/* ===== MOBILE OPTIMIZATIONS ===== */
+@media (max-width: 767px) {
+    .home-hero {
+        padding: 4rem 1rem 3rem;
+    }
+
+    .home-title {
+        font-size: 2.2rem;
+        line-height: 1.2;
+        margin-bottom: 1rem;
+    }
+
+    .home-subtitle {
+        font-size: 0.95rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .home-hero-glow {
+        width: 280px;
+        height: 280px;
+    }
+
+    .home-btn-primary,
+    .home-btn-secondary {
+        width: 100%;
+        justify-content: center;
+        font-size: 0.95rem;
+        padding: 0.75rem 1.25rem;
+    }
+
+    .home-analytics {
+        padding: 2.5rem 0.875rem;
+    }
+
+    .home-features {
+        padding: 2.5rem 0.875rem;
+    }
+
+    .home-grid-kpi {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+    }
+
+    .home-card-kpi {
+        padding: 1rem;
+    }
+
+    .home-card-val {
+        font-size: 1.25rem;
+    }
+
+    .home-chart-card {
+        padding: 1.25rem;
+        border-radius: 1rem;
+    }
+
+    .home-section-title {
+        font-size: 1.5rem;
+    }
+
+    .home-ticker-label {
+        display: none;
+    }
+}

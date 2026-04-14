@@ -307,3 +307,34 @@
     background-color: rgba(52, 211, 153, 0.4);
     transform: scale(1.8);
 }
+
+/* ===== MOBILE OPTIMIZATIONS ===== */
+@media (max-width: 767px) {
+    .health-section {
+        padding: 4rem 0 2rem;
+    }
+
+    .health-container {
+        padding: 0 0.875rem;
+    }
+
+    .health-header {
+        padding: 1.25rem;
+        border-radius: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .health-title {
+        font-size: 1.4rem;
+    }
+
+    .health-table th,
+    .health-table td {
+        padding: 0.6rem 0.75rem;
+        font-size: 0.75rem;
+    }
+
+    .health-accordion-btn {
+        padding: 0.875rem 1rem;
+    }
+}
