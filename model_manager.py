@@ -62,9 +62,10 @@ def load_models():
     if not os.path.exists(model_1h_path) or not os.path.exists(model_24h_path):
         logging.warning("AI Models missing! Attempting to launch the automated training script...")
         
+        import sys
         try:
-            # Try to run the actual training python script
-            result = subprocess.run(['python', TRAIN_SCRIPT], cwd=os.path.dirname(TRAIN_SCRIPT), text=True, capture_output=True)
+            # Try to run the actual training python script using the exact same python interpreter
+            result = subprocess.run([sys.executable, TRAIN_SCRIPT], cwd=os.path.dirname(TRAIN_SCRIPT), text=True, capture_output=True)
             
             if result.returncode != 0:
                 logging.error(f"Training script failed (likely missing CSV data). Error output:\n{result.stderr}")
