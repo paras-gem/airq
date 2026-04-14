@@ -67,10 +67,10 @@ X_train, X_test, y_1h_train, y_1h_test = train_test_split(X, y_1h, test_size=0.2
 _, _, y_24h_train, y_24h_test = train_test_split(X, y_24h, test_size=0.2, random_state=42, shuffle=False)
 
 print("[TRAINING] Training models... please wait.")
-rf_1h = RandomForestRegressor(n_estimators=100, random_state=42, n_jobs=-1)
+rf_1h = RandomForestRegressor(n_estimators=25, max_depth=12, random_state=42, n_jobs=-1)
 rf_1h.fit(X_train, y_1h_train)
 
-rf_24h = RandomForestRegressor(n_estimators=100, random_state=42, n_jobs=-1)
+rf_24h = RandomForestRegressor(n_estimators=25, max_depth=12, random_state=42, n_jobs=-1)
 rf_24h.fit(X_train, y_24h_train)
 
 # --- Step 6: Accuracy Reports ---
