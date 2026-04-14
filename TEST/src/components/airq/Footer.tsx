@@ -8,33 +8,10 @@ const footerLinks = [
   { label: "Developer Credits", href: "/about#credits" },
 ];
 
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 
 export default function Footer() {
-  const navigate = useNavigate();
   const location = useLocation();
-
-  const handleNav = (e: React.MouseEvent, href: string) => {
-    e.preventDefault();
-    if (href.startsWith("/")) {
-      if (location.pathname === "/about" && href.includes("#")) {
-        const id = href.split("#")[1];
-        document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
-      } else {
-        navigate(href);
-      }
-    } else {
-      const id = href.replace("#", "");
-      if (location.pathname === "/") {
-        const el = document.getElementById(id);
-        if (el) {
-          el.scrollIntoView({ behavior: "smooth" });
-        }
-      } else {
-        navigate(`/${href}`);
-      }
-    }
-  };
 
   return (
     <footer className="footer">
@@ -55,14 +32,13 @@ export default function Footer() {
           {/* Links */}
           <nav className="footer-nav">
             {footerLinks.map((link) => (
-              <a
+              <Link
                 key={link.label}
-                href={link.href}
-                onClick={(e) => handleNav(e, link.href)}
+                to={link.href}
                 className="footer-link"
               >
                 {link.label}
-              </a>
+              </Link>
             ))}
           </nav>
 
@@ -70,13 +46,12 @@ export default function Footer() {
           <div className="footer-copyright-group">
             <p className="footer-copyright">
               © 2026 AirQ. Developed by{" "}
-              <a 
-                href="/about#credits" 
-                onClick={(e) => handleNav(e, "/about#credits")}
+              <Link 
+                to="/about#credits" 
                 className="footer-dev-credit"
               >
                 <span>Pratham Kumar Gupta</span> & Team
-              </a>
+              </Link>
             </p>
           </div>
         </div>

@@ -116,25 +116,39 @@ export default function HomeSection() {
   useEffect(() => {
     const fetchLiveStats = async () => {
       try {
-        const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
-        const response = await fetch(`${API_URL}/live-aqi`);
-        if (!response.ok) throw new Error("API unreachable");
-        const json = await response.json();
-        if (json.data) {
-          setLiveCities(json.data);
-        }
+        const token = "75897232e9054fba3a86a75ae037b61bc4172e39";
+        const fetchCityAQI = async (cityName: string) => {
+          const res = await fetch(`https://api.waqi.info/feed/${cityName.toLowerCase()}/?token=${token}`);
+          const json = await res.json();
+          if (json.status === "ok") {
+            return json.data.aqi;
+          }
+          return null;
+        };
+
+        const updatedCities = await Promise.all(
+          cities.map(async (c) => {
+            const liveAqi = await fetchCityAQI(c.name);
+            if (liveAqi !== null && typeof liveAqi === 'number') {
+              let level = "Good";
+              if (liveAqi > 50) level = "Satisfactory";
+              if (liveAqi > 100) level = "Moderate";
+              if (liveAqi > 200) level = "Poor";
+              if (liveAqi > 300) level = "Very Poor";
+              if (liveAqi > 400) level = "Severe";
+              return { ...c, aqi: liveAqi, level };
+            }
+            return c;
+          })
+        );
+        setLiveCities(updatedCities);
       } catch (err) {
-        console.warn("Live AQI fetch failed, using fallback:", err);
-        // Fallback: Slightly randomize existing data to maintain "live" feel
-        setLiveCities(prev => prev.map(c => ({
-          ...c,
-          aqi: Math.max(20, c.aqi + Math.floor(Math.random() * 7) - 3)
-        })));
+        console.warn("WAQI fetch failed, using defaults:", err);
       }
     };
 
     fetchLiveStats();
-    const interval = setInterval(fetchLiveStats, 30000); 
+    const interval = setInterval(fetchLiveStats, 300000); // every 5 minutes
     return () => clearInterval(interval);
   }, []);
 

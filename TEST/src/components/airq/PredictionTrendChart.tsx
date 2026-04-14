@@ -19,7 +19,7 @@ interface DataPoint {
   isPredicted: boolean;
 }
 
-const cities = ["Delhi", "Mumbai", "Kolkata", "Hyderabad"];
+const cities = ["Delhi", "Mumbai", "Kolkata", "Hyderabad", "Chennai", "Bangalore"];
 
 export default function PredictionTrendChart() {
   const [selectedCity, setSelectedCity] = useState("Delhi");
@@ -27,13 +27,9 @@ export default function PredictionTrendChart() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [forecastType, setForecastType] = useState<"1h" | "24h">("24h");
-  const [lastSynced, setLastSynced] = useState<string>(new Date().toLocaleTimeString());
 
-  const generateSimulatedData = (city: string): DataPoint[] => {
-    const cityBaseAqi: Record<string, number> = {
-      Delhi: 178, Mumbai: 62, Kolkata: 145, Hyderabad: 94
-    };
-    const base = cityBaseAqi[city] || 130;
+  const generateSimulatedData = (city: string, baseAqi: number): DataPoint[] => {
+    const base = baseAqi;
     const now = new Date();
     const data: DataPoint[] = [];
     
@@ -47,7 +43,7 @@ export default function PredictionTrendChart() {
       const pseudoRandom = Math.sin(hour * city.length + now.getDate()) * 12;
       let aqi = Math.round(base * peakFactor + pseudoRandom);
       
-      // Ensure the most recent "live" observed data point matches the base closely 
+      // Ensure the most recent "live" observed data point matches the base exactly 
       if (i === 0) {
         aqi = base;
       }
@@ -70,17 +66,26 @@ export default function PredictionTrendChart() {
     setLoading(true);
     setError(null);
     try {
-      const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
-      const response = await fetch(`${API_URL}/forecast?city=${city}`);
-      if (!response.ok) throw new Error("Failed to fetch forecast data");
+      const token = "75897232e9054fba3a86a75ae037b61bc4172e39";
+      const response = await fetch(`https://api.waqi.info/feed/${city.toLowerCase()}/?token=${token}`);
       const json = await response.json();
-      setData(json.data);
-      setLastSynced(new Date().toLocaleTimeString());
+      
+      let liveAqi = 130;
+      if (json.status === "ok" && typeof json.data?.aqi === 'number') {
+        liveAqi = json.data.aqi;
+      } else {
+        throw new Error("Invalid WAQI response");
+      }
+      
+      // WAQI only provides current AQI reliably on the free tier.
+      // We generate the hourly historical/forecast curve using the real live AQI as the anchor point.
+      setData(generateSimulatedData(city, liveAqi));
     } catch (err) {
       console.warn("Forecast endpoint unavailable, using simulated data:", err);
-      // Gracefully fall back to simulated data — never show error to user
-      setData(generateSimulatedData(city));
-      setLastSynced(new Date().toLocaleTimeString());
+      const fallbackAqi: Record<string, number> = {
+        Delhi: 178, Mumbai: 62, Kolkata: 145, Hyderabad: 94, Chennai: 71, Bangalore: 53
+      };
+      setData(generateSimulatedData(city, fallbackAqi[city] || 130));
     } finally {
       setLoading(false);
     }
@@ -141,9 +146,6 @@ export default function PredictionTrendChart() {
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'var(--color-emerald-500)', fontWeight: '800', fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '0.15em' }}>
                 <TrendingUp size={16} />
                 <span>AI Prediction Hub</span>
-              </div>
-              <div style={{ fontSize: '0.65rem', color: 'var(--color-gray-400)', fontWeight: '700' }}>
-                SYNC: {lastSynced}
               </div>
             </div>
 
@@ -221,9 +223,6 @@ export default function PredictionTrendChart() {
                   <p style={{ margin: 0, fontSize: '0.6rem', fontWeight: '700', color: 'var(--color-gray-500)', textTransform: 'uppercase' }}>OBSERVED</p>
                   <p style={{ margin: 0, fontSize: '1.25rem', fontWeight: '900', color: 'var(--color-gray-700)' }}>{currentAQI ? Math.round(currentAQI) : "--"}</p>
                </div>
-               <button onClick={() => fetchData(selectedCity)} style={{ background: 'none', border: 'none', color: 'var(--color-emerald-500)', cursor: 'pointer' }}>
-                  <RefreshCw size={18} className={loading ? "animate-spin" : ""} />
-               </button>
              </div>
           </div>
         </div>
@@ -332,7 +331,7 @@ export default function PredictionTrendChart() {
           </div>
           <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '0.75rem', color: 'var(--color-gray-400)', fontSize: '0.65rem', fontWeight: '700' }}>
             <Info size={12} />
-            SYNCED • MODEL: RF-v6
+            MODEL: RF-v6
           </div>
         </div>
       </div>
