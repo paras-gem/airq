@@ -8,11 +8,24 @@ const footerLinks = [
   { label: "Developer Credits", href: "#credits" },
 ];
 
+import { useNavigate, useLocation } from "react-router-dom";
+
 export default function Footer() {
-  const scrollTo = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleNav = (e: React.MouseEvent, href: string) => {
     e.preventDefault();
     const id = href.replace("#", "");
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+
+    if (location.pathname === "/") {
+      const el = document.getElementById(id);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth" });
+      }
+    } else {
+      navigate(`/${href}`);
+    }
   };
 
   return (
@@ -37,7 +50,7 @@ export default function Footer() {
               <a
                 key={link.label}
                 href={link.href}
-                onClick={(e) => scrollTo(e, link.href)}
+                onClick={(e) => handleNav(e, link.href)}
                 className="footer-link"
               >
                 {link.label}
@@ -46,9 +59,18 @@ export default function Footer() {
           </nav>
 
           {/* Copyright */}
-          <p className="footer-copyright">
-            © 2026 AirQ. AI-Powered Air Quality Prediction.
-          </p>
+          <div className="footer-copyright-group">
+            <p className="footer-copyright">
+              © 2026 AirQ. Developed by{" "}
+              <a 
+                href="#credits" 
+                onClick={(e) => handleNav(e, "#credits")}
+                className="footer-dev-credit"
+              >
+                <span>Pratham Kumar Gupta</span> & Team
+              </a>
+            </p>
+          </div>
         </div>
       </div>
     </footer>
